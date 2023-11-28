@@ -1,39 +1,37 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/gist/view", gistView)
-	mux.HandleFunc("/gist/create", gistCreate)
+	// Flags
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
 
-	log.Println("Starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
-}
+	// Logs
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-func home(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
 	}
-	w.Write([]byte("Hello from gistbin"))
-}
 
-func gistView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Gist view"))
-}
-
-func gistCreate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.Header().Set("ALLOW", http.MethodPost)
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		w.Write([]byte("Method not allowed"))
-		return
+	server := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  app.routes(),
 	}
-	w.Write([]byte("Gist create"))
+	infoLog.Printf("Starting server on %s", *addr)
+	err := server.ListenAndServe()
+	errorLog.Fatal(err)
 }
