@@ -2,6 +2,11 @@
 
 
 ## MySQL
+### Installation
+```bash
+brew install mysql
+```
+
 ### Start MySQL
 To start mysql now and restart at login:
 ```SQL

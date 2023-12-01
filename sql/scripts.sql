@@ -1,3 +1,9 @@
+-- Create a new UTF-8 `snippetbox` database.
+CREATE DATABASE snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Switch to using the `snippetbox` database.
+USE snippetbox;
+
 CREATE TABLE snippets (
     id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(100) NOT NULL,
@@ -24,7 +30,7 @@ INSERT INTO snippets (title, content, created, expires) VALUES (
 
 INSERT INTO snippets (title, content, created, expires) VALUES (
     'First autumn morning',
-    'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo',
+    'First autumn morning\nthe mirror I stare into\nshows my father s face.\n\n– Murakami Kijo',
     UTC_TIMESTAMP(),
     DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
 );
