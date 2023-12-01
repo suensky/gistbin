@@ -29,5 +29,9 @@ mysql -D snippetbox -u web -p
 -- PASSWORD: pass
 ```
 
-### SQL
+### Browse
+#### Curl
+```
+curl -i "http://localhost:4000/gist/view?id=1”
+```
 
