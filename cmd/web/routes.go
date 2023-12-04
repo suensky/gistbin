@@ -20,11 +20,14 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
+	// Dynamic routes
+	dynamic := alice.New(app.sessionManager.LoadAndSave)
+
 	// Routing
-	router.HandlerFunc(http.MethodGet, "/", app.home)
-	router.HandlerFunc(http.MethodGet, "/gist/view/:id", app.gistView)
-	router.HandlerFunc(http.MethodGet, "/gist/create", app.gistCreate)
-	router.HandlerFunc(http.MethodPost, "/gist/create", app.gistCreatePost)
+	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+	router.Handler(http.MethodGet, "/gist/view/:id", dynamic.ThenFunc(app.gistView))
+	router.Handler(http.MethodGet, "/gist/create", dynamic.ThenFunc(app.gistCreate))
+	router.Handler(http.MethodPost, "/gist/create", dynamic.ThenFunc(app.gistCreatePost))
 
 	// Middleware registry
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
