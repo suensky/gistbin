@@ -35,3 +35,10 @@ mysql -D snippetbox -u web -p
 curl -i "http://localhost:4000/gist/view?id=1”
 ```
 
+## Security
+
+### TLS
+Generate a TLS certificate
+```bash
+go run /usr/local/go/src/crypto/tls/generate_cert.go --rsa-bits=2048 --host=localhost
+```
