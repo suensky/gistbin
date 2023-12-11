@@ -21,7 +21,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
 	// Dynamic routes
-	dynamic := alice.New(app.sessionManager.LoadAndSave, app.noSurf)
+	dynamic := alice.New(app.sessionManager.LoadAndSave, app.noSurf, app.authenticate)
 
 	// Routing - authentication not required
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))

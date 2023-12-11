@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-playground/form/v4"
 	"github.com/justinas/nosurf"
-	"github.com/suensky/gistbin/internal/models"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -75,5 +74,10 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 }
 
 func (app *application) IsAuthenticated(r *http.Request) bool {
-	return app.sessionManager.Exists(r.Context(), models.UserAuthenticatedID)
+	isAuthenticated, ok := r.Context().Value(isAuthenticatedContextKey).(bool)
+	if !ok {
+		return false
+	}
+
+	return isAuthenticated
 }
