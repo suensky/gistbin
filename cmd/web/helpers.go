@@ -40,6 +40,7 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 	err := t.ExecuteTemplate(buf, "base", data)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	w.WriteHeader(status)
